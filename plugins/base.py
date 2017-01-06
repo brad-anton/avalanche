@@ -6,6 +6,29 @@ class Plugin(object):
 	def __init__(self):
 		pass
 
+	@staticmethod
+	def get_attribute(info, key, key_type=unicode(), default=None):
+		"""Parses 'info' to check if the key attribute exists
+		and is of type 'type'. If not, return default.
+
+		Keyword Arguments:
+		info -- dictionary containing plugin information
+		key -- dictionary key to check
+		type -- class that info[key] should be
+		default -- default value to use if parsing fails
+		"""
+
+		if not isinstance(info, dict):
+			return default
+        
+		if 'attributes' in info:
+			if key in info['attributes'] and info['attributes'][key]:
+				if isinstance(info['attributes'][key], type(key_type)):
+					return info['attributes'][key]
+
+		return default
+
+
 	def run(self, node):
 		while True:
 			data = node.input.recv()
@@ -57,3 +80,4 @@ class PluginRack(Plugin):
 
 			while len(input_messages) > 0:
 				node.output.send_json(input_messages.popleft())
+
